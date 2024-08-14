@@ -44,12 +44,14 @@ rt = app.route
 @rt("/")
 def get(q: str = ''):
     search_form = Form(
-        Input(id="search", name="q", placeholder="Search papers...", value=q),
+        Input(id="search", name="q", placeholder="Search papers...", value=q, type="search",
+            hx_get="/",
+            hx_trigger="search, keyup[key=='Enter']",
+            hx_target="body"),
         Button("Search"),
         cls="search-form",
         method="get"
     )
-    
     add_form = Form(
         Input(id="url", name="url", placeholder="ArXiv URL"),
         Button("Add Paper"),

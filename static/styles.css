@@ -56,3 +56,30 @@ h1.main-title { color: #00008B; }
 
 .remove-button { background-color: #ff6b6b; }
 .toggle-state-button { background-color: #4CAF50; }
+
+.clear-button {
+    background-color: #7ba9c2;  /* Darker shade of the primary color */
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;  /* This ensures all items stretch to the same height */
+}
+
+.search-form input[type="search"] {
+    flex-grow: 1;
+    border-radius: 20px;
+    padding: 8px 15px 8px 35px;  /* Increased left padding to move text right */
+    background-position: 10px center;  /* Move the search icon to the right */
+}
+
+.search-form button {
+    flex-shrink: 0;
+    min-width: 80px;
+    border-radius: 20px;
+    height: 100%;  /* This ensures the button takes full height of its container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
