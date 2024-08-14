@@ -65,7 +65,12 @@ h1.main-title { color: #00008B; }
     display: flex;
     gap: 10px;
     align-items: stretch;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Add this new rule */
+.add-form {
+    margin-top: -0.5rem; /* Negative margin to pull it up closer to the search form */
 }
 
 .search-form input[type="search"],
