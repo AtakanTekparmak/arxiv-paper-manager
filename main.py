@@ -52,10 +52,11 @@ def get(q: str = ''):
         cls="search-form",
         method="get"
     )
+
     add_form = Form(
-        Input(id="url", name="url", placeholder="ArXiv URL"),
+        Input(id="url", name="url", placeholder="ArXiv URL", type="search"),
         Button("Add Paper"),
-        cls="add-form",
+        cls="add-form search-form",  # Add 'search-form' class here
         hx_post="/add",
         hx_target="#paper-list",
         hx_swap="afterbegin"
@@ -96,7 +97,7 @@ def post(url: str):
         new_paper = papers.insert(paper_info)
         return Div(
             create_paper_card(new_paper),
-            Input(id="url", name="url", placeholder="ArXiv URL", value="", hx_swap_oob="true"),
+            Input(id="url", name="url", placeholder="ArXiv URL", value="", type="search", hx_swap_oob="true"),
         )
     except Exception as e:
         return Div(f"Error adding paper: {str(e)}", cls="error-message")
