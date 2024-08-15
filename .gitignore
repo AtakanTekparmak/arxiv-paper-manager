@@ -166,3 +166,6 @@ data/
 
 # .sesskey
 .sesskey
+
+# fasthtml_example
+fasthtml_example.py
