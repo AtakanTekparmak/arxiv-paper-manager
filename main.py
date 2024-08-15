@@ -21,7 +21,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 rt = app.route
 
 @rt("/")
-def get(q: str = ''):
+def get(q: str = '', filter: str = 'all'):
     search_form = Form(
         Input(id="search", name="q", placeholder="Search papers...", value=q, type="search",
             hx_get="/",
@@ -44,7 +44,7 @@ def get(q: str = ''):
     if q:
         results = search_papers(q)
     else:
-        results = sorted(get_all_papers(), key=lambda p: p.id, reverse=True)
+        results = get_all_papers(filter)
     
     paper_cards = [create_paper_card(paper) for paper in results]
     

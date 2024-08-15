@@ -33,8 +33,16 @@ def toggle_paper_state(paper_id: int):
     updated_paper = papers.update({"state": new_state}, paper_id)
     return Paper(**updated_paper)
 
-def get_all_papers():
-    return [Paper(**p) for p in papers()]
+def get_all_papers(filter='all'):
+    all_papers = [Paper(**p) for p in papers()]
+    if filter == 'all':
+        return all_papers
+    elif filter == 'to-be-read':
+        return [p for p in all_papers if p.state == "To Be Read"]
+    elif filter == 'read':
+        return [p for p in all_papers if p.state == "Read"]
+    else:
+        raise ValueError("Invalid filter value")
 
 def search_papers(query: str):
     all_papers = get_all_papers()
