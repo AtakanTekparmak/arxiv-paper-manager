@@ -11,7 +11,7 @@ app = FastHTML(
     hdrs=(
         picolink,
         Link(rel="stylesheet", href="/static/styles.css"),
-        Script(src="/static/main.js")  # Add this line to include the JavaScript file
+        Script(src="/static/main.js")
     )
 )
 

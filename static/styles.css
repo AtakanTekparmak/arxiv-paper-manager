@@ -5,27 +5,72 @@
     --primary-inverse: #fff;
 }
 
-body { background-color: #f0f8ff; }
+body {
+    background-color: #f0f8ff;
+}
 
-h1.main-title { color: #00008B; }
+.container {
+    padding-top: 1rem;
+}
 
-.card { 
-    background-color: #fff; 
-    border-radius: 15px; 
+/* Typography */
+h1.main-title {
+    color: #00008B;
+    margin: 0;
+}
+
+.paper-title {
+    color: #041c26;
+}
+
+.paper-abstract {
+    color: #162b34;
+}
+
+/* Layout */
+.header,
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.top-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.search-container {
+    flex-grow: 1;
+    margin-right: 1rem;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    align-self: flex-end;
+}
+
+.paper-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+/* Cards */
+.card {
+    background-color: #fff;
+    border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
     padding: 1rem;
     padding-top: 2.5rem;
     margin-bottom: 1rem;
-    color: #11191f;  /* This is typically the color of Pico.css's form input backgrounds */
-}
-
-.search-form, .add-form { margin-bottom: 2rem; }
-
-.paper-list { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-    gap: 1rem; 
+    color: #11191f;
 }
 
 .paper-state {
@@ -38,43 +83,32 @@ h1.main-title { color: #00008B; }
     font-size: 0.8rem;
 }
 
-.paper-title { color: #041c26; }
-
-.paper-abstract { color: #162b34; }
-
-.to-be-read { background-color: #ffa500; }
-.read { background-color: #4CAF50; }
-
-.remove-button, .toggle-state-button {
-    margin-top: 10px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: white;
-    border: none;
-    cursor: pointer;
+.to-be-read {
+    background-color: #ffa500;
 }
 
-.remove-button { background-color: #ff6b6b; }
-.toggle-state-button { background-color: #4CAF50; }
-
-.clear-button {
-    background-color: #7ba9c2;  /* Darker shade of the primary color */
+.read {
+    background-color: #4CAF50;
 }
 
-.search-form, .add-form {
+/* Forms */
+.search-form,
+.add-form {
     display: flex;
     gap: 10px;
     align-items: stretch;
     margin-bottom: 1rem;
+    width: 100%;
 }
 
-/* Add this new rule */
 .add-form {
-    margin-top: -0.5rem; /* Negative margin to pull it up closer to the search form */
+    margin-top: -0.5rem;
 }
 
 .search-form input[type="search"],
-.add-form input[type="search"] {
+.add-form input[type="search"],
+.search-form input,
+.add-form input {
     flex-grow: 1;
     border-radius: 20px;
     padding: 8px 15px 8px 35px;
@@ -92,10 +126,25 @@ h1.main-title { color: #00008B; }
     justify-content: center;
 }
 
-.search-form input,
-.add-form input {
-    flex-grow: 1;
-    border-radius: 20px;
-    padding: 8px 15px 8px 35px;
-    background-position: 10px center;
+/* Buttons */
+.remove-button,
+.toggle-state-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.remove-button {
+    background-color: #ff6b6b;
+}
+
+.toggle-state-button {
+    background-color: #4CAF50;
+}
+
+.clear-button {
+    background-color: #7ba9c2;
 }
