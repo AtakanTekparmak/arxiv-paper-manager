@@ -60,6 +60,8 @@ def post(url: str):
     try:
         paper_info = fetch_paper_info(url)
         new_paper = add_paper(paper_info)
+        if new_paper is None:
+            return Div("Paper already exists in the database.", cls="error-message")
         return Div(
             create_paper_card(Paper(**new_paper)),
             Input(id="url", name="url", placeholder="ArXiv URL", value="", type="search", hx_swap_oob="true"),

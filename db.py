@@ -1,6 +1,6 @@
 from fasthtml.common import database
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Union
 
 # Database setup
 db = database('data/arxiv_papers.db')
@@ -20,7 +20,13 @@ def init_db():
         papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, pk='id')
 
 # Database operations
-def add_paper(paper: Paper):
+def add_paper(paper: Paper) -> Union[None, int]:
+    papers = get_all_papers()
+
+    for paper in papers:
+        if paper.title == paper.title and paper.pdf_url == paper.pdf_url:
+            return None
+    
     return papers.insert(paper.model_dump(exclude={'id'}))
 
 def remove_paper(paper_id: int):
