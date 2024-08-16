@@ -21,12 +21,6 @@ def init_db():
 
 # Database operations
 def add_paper(paper: Paper) -> Union[None, int]:
-    papers = get_all_papers()
-
-    for paper in papers:
-        if paper.title == paper.title and paper.pdf_url == paper.pdf_url:
-            return None
-    
     return papers.insert(paper.model_dump(exclude={'id'}))
 
 def remove_paper(paper_id: int):

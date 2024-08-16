@@ -50,6 +50,7 @@ def get(q: str = '', filter: str = 'all'):
     
     return Title("ArXiv Paper Manager"), Container(
         H1("ArXiv Paper Manager", cls="main-title"),
+        Br(), # I'm no frontend developer, i have no shame
         search_form,
         add_form,
         Div(*paper_cards, id="paper-list", cls="paper-list")
