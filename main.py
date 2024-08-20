@@ -48,9 +48,29 @@ def get(q: str = '', filter: str = 'all'):
     
     paper_cards = [create_paper_card(paper) for paper in results]
     
+    toggle_buttons = Div(
+        Button("To Be Read", 
+               cls=f"toggle-button to-be-read-button {'active' if filter == 'to-be-read' else ''}",
+               id="to-be-read-toggle",
+               hx_get=f"/?filter={'all' if filter == 'to-be-read' else 'to-be-read'}",
+               hx_target="body",
+               hx_push_url="true"),
+        Button("Read", 
+               cls=f"toggle-button read-button {'active' if filter == 'read' else ''}",
+               id="read-toggle",
+               hx_get=f"/?filter={'all' if filter == 'read' else 'read'}",
+               hx_target="body",
+               hx_push_url="true"),
+        cls="toggle-buttons"
+    )
+    
     return Title("ArXiv Paper Manager"), Container(
-        H1("ArXiv Paper Manager", cls="main-title"),
-        Br(), # I'm no frontend developer, i have no shame
+        Div(
+            H1("ArXiv Paper Manager", cls="main-title"),
+            toggle_buttons,
+            cls="header"
+        ),
+        Br(),
         search_form,
         add_form,
         Div(*paper_cards, id="paper-list", cls="paper-list")
