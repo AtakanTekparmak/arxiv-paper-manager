@@ -50,17 +50,28 @@ def get(q: str = '', filter: str = 'all'):
     
     toggle_buttons = Div(
         Button("To Be Read", 
-               cls=f"toggle-button to-be-read-button {'active' if filter == 'to-be-read' else ''}",
+               cls=f"to-be-read-button {'active' if filter == 'to-be-read' else ''}",
                id="to-be-read-toggle",
                hx_get=f"/?filter={'all' if filter == 'to-be-read' else 'to-be-read'}",
                hx_target="body",
-               hx_push_url="true"),
+               hx_push_url="true",
+               style="""
+               background-color: #ffa500;
+               border-color: #ffa500;
+               border-radius: 10px;
+               """
+        ),
         Button("Read", 
-               cls=f"toggle-button read-button {'active' if filter == 'read' else ''}",
+               cls=f"read-button {'active' if filter == 'read' else ''}",
                id="read-toggle",
                hx_get=f"/?filter={'all' if filter == 'read' else 'read'}",
                hx_target="body",
-               hx_push_url="true"),
+               hx_push_url="true",
+               style="""
+               background-color: #4CAF50;
+               border-color: #4CAF50;
+               border-radius: 10px;
+               """),
         cls="toggle-buttons"
     )
     
