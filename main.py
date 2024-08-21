@@ -1,7 +1,9 @@
 from fasthtml.common import *
 from starlette.staticfiles import StaticFiles
+
 from db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper
-from utils import fetch_paper_info, create_paper_card
+from utils import fetch_paper_info
+from components import get_search_form, get_add_form, get_paper_card
 
 # Initialize the database
 init_db()
@@ -22,31 +24,16 @@ rt = app.route
 
 @rt("/")
 def get(q: str = '', filter: str = 'all'):
-    search_form = Form(
-        Input(id="search", name="q", placeholder="Search papers...", value=q, type="search",
-            hx_get="/",
-            hx_trigger="search, keyup[key=='Enter']",
-            hx_target="body"),
-        Button("Search"),
-        cls="search-form",
-        method="get"
-    )
+    search_form = get_search_form(q)
 
-    add_form = Form(
-        Input(id="url", name="url", placeholder="ArXiv URL", type="search"),
-        Button("Add Paper"),
-        cls="add-form search-form",
-        hx_post="/add",
-        hx_target="#paper-list",
-        hx_swap="afterbegin"
-    )
+    add_form = get_add_form()
     
     if q:
         results = search_papers(q)
     else:
         results = get_all_papers(filter)
     
-    paper_cards = [create_paper_card(paper) for paper in results]
+    paper_cards = [get_paper_card(paper) for paper in results]
     
     toggle_buttons = Div(
         Button("To Be Read", 
@@ -81,7 +68,6 @@ def get(q: str = '', filter: str = 'all'):
             toggle_buttons,
             cls="header"
         ),
-        Br(),
         search_form,
         add_form,
         Div(*paper_cards, id="paper-list", cls="paper-list")
@@ -95,7 +81,7 @@ def post(url: str):
         if new_paper is None:
             return Div("Paper already exists in the database.", cls="error-message")
         return Div(
-            create_paper_card(Paper(**new_paper)),
+            get_paper_card(Paper(**new_paper)),
             Input(id="url", name="url", placeholder="ArXiv URL", value="", type="search", hx_swap_oob="true"),
         )
     except Exception as e:
@@ -109,6 +95,6 @@ def delete(paper_id: int):
 @rt("/toggle_state/{paper_id}")
 def post(paper_id: int):
     updated_paper = toggle_paper_state(paper_id)
-    return create_paper_card(updated_paper)
+    return get_paper_card(updated_paper)
 
 serve()

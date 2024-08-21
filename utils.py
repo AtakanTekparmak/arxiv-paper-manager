@@ -28,18 +28,3 @@ def fetch_paper_info(url: str) -> Paper:
     #submitted = re.search(r'\d{1,2} \w{3} \d{4}', soup.find('div', class_='dateline').text.strip().split('Submitted on ')[1].strip()).group(0)
 
     return Paper(title=title, abstract=abstract, pdf_url=pdf_url)
-
-def create_paper_card(paper):
-    """
-    Creates a card element for a given Paper object
-    """
-    return Card(
-        Div(paper.state, cls=f"paper-state {'to-be-read' if paper.state == 'To Be Read' else 'read'}"),
-        H3(paper.title, cls="paper-title"),
-        P(paper.abstract[:200] + '...' if len(paper.abstract) > 200 else paper.abstract, cls="paper-abstract"),
-        A("View PDF", href=paper.pdf_url, target="_blank"),
-        Button("Remove", cls="remove-button", hx_delete=f"/remove/{paper.id}", hx_target="closest .card", hx_swap="outerHTML"),
-        Button("Toggle State", cls="toggle-state-button", hx_post=f"/toggle_state/{paper.id}", hx_target="closest .card", hx_swap="outerHTML"),
-        id=f"paper-{paper.id}",
-        cls="paper-card card"
-    )
