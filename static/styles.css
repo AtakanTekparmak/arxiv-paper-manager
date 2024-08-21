@@ -63,7 +63,7 @@ h1.main-title {
 /* Cards */
 .card {
     background-color: #fff;
-    border-radius: 15px;
+    border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
     padding: 1rem;
@@ -109,7 +109,7 @@ h1.main-title {
 .search-form input,
 .add-form input {
     flex-grow: 1;
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 8px 15px 8px 35px;
     background-position: 10px center;
 }
@@ -118,7 +118,7 @@ h1.main-title {
 .add-form button {
     flex-shrink: 0;
     min-width: 80px;
-    border-radius: 20px;
+    border-radius: 10px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -130,7 +130,7 @@ h1.main-title {
 .toggle-state-button {
     margin-top: 10px;
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     color: white;
     border: none;
     cursor: pointer;
