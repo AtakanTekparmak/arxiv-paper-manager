@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from fasthtml.common import Card, Div, H3, P, A, Button
 
-from db import Paper
+from src.db import Paper
 
 def parse_arxiv_url(url: str) -> str:
     """

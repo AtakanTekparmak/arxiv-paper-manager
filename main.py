@@ -1,9 +1,9 @@
 from fasthtml.common import *
 from starlette.staticfiles import StaticFiles
 
-from db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper
-from utils import fetch_paper_info
-from components import get_search_form, get_add_form, get_paper_card
+from src.db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper
+from src.utils import fetch_paper_info
+from src.components import get_search_form, get_add_form, get_paper_card, get_toggle_buttons
 
 # Initialize the database
 init_db()
@@ -24,8 +24,9 @@ rt = app.route
 
 @rt("/")
 def get(q: str = '', filter: str = 'all'):
-    search_form = get_search_form(q)
 
+    # Get the search form, add form, and paper cards
+    search_form = get_search_form(q)
     add_form = get_add_form()
     
     if q:
@@ -35,32 +36,7 @@ def get(q: str = '', filter: str = 'all'):
     
     paper_cards = [get_paper_card(paper) for paper in results]
     
-    toggle_buttons = Div(
-        Button("To Be Read", 
-               cls=f"to-be-read-button {'active' if filter == 'to-be-read' else ''}",
-               id="to-be-read-toggle",
-               hx_get=f"/?filter={'all' if filter == 'to-be-read' else 'to-be-read'}",
-               hx_target="body",
-               hx_push_url="true",
-               style="""
-               background-color: #ffa500;
-               border-color: #ffa500;
-               border-radius: 10px;
-               """
-        ),
-        Button("Read", 
-               cls=f"read-button {'active' if filter == 'read' else ''}",
-               id="read-toggle",
-               hx_get=f"/?filter={'all' if filter == 'read' else 'read'}",
-               hx_target="body",
-               hx_push_url="true",
-               style="""
-               background-color: #4CAF50;
-               border-color: #4CAF50;
-               border-radius: 10px;
-               """),
-        cls="toggle-buttons"
-    )
+    toggle_buttons = get_toggle_buttons(filter)
     
     return Title("ArXiv Paper Manager"), Container(
         Div(
