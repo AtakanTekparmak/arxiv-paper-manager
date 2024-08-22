@@ -30,7 +30,7 @@ install:
 # Load papers from JSON file
 load_papers:
 	. $(VENV_NAME)/bin/activate && \
-	$(PYTHON) load_papers.py
+	$(PYTHON) src/load_papers.py
 
 # Run the main.py script
 run: 

@@ -1,5 +1,5 @@
 import json
-from src.db import database, Paper, init_db
+from db import database, Paper, init_db
 
 def load_papers_from_json(filename='arxiv_papers.json'):
     """
