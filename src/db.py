@@ -1,6 +1,7 @@
 from fasthtml.common import database
 from pydantic import BaseModel
 from typing import Optional, Union
+import json
 
 # Database setup
 db = database('data/arxiv_papers.db')
@@ -21,6 +22,14 @@ def init_db():
 
 # Database operations
 def add_paper(paper: Paper) -> Union[None, int]:
+    """
+    Adds a new paper to the database.
+
+    Args:
+        paper (Paper): The Paper object to add.
+    Returns:
+        int: The ID of the added paper.
+    """
     existing_papers = get_all_papers()
     for p in existing_papers:
         if p.title == paper.title:
@@ -28,9 +37,23 @@ def add_paper(paper: Paper) -> Union[None, int]:
     return papers.insert(paper.model_dump(exclude={'id'}))
 
 def remove_paper(paper_id: int):
+    """
+    Removes a paper from the database.
+
+    Args:
+        paper_id (int): The ID of the paper.
+    """ 
     papers.delete(paper_id)
 
 def toggle_paper_state(paper_id: int):
+    """
+    Toggles the state of the paper between "To Be Read" and "Read".
+
+    Args:
+        paper_id (int): The ID of the paper.
+    Returns:
+        Paper: The updated Paper object.
+    """
     paper_dict = papers[paper_id]
     paper = Paper(**paper_dict)
     new_state = "Read" if paper.state == "To Be Read" else "To Be Read"
@@ -38,6 +61,14 @@ def toggle_paper_state(paper_id: int):
     return Paper(**updated_paper)
 
 def get_all_papers(filter='all'):
+    """
+    Returns all papers in the database.
+
+    Args:
+        filter (str): The filter to apply.
+    Returns:
+        list: A list of Paper objects.
+    """
     all_papers = [Paper(**p) for p in papers()]
     if filter == 'all':
         return all_papers
@@ -49,6 +80,21 @@ def get_all_papers(filter='all'):
         raise ValueError("Invalid filter value")
 
 def search_papers(query: str):
+    """
+    Searches for papers containing the query in their title or abstract.
+
+    Args:
+        query (str): The search query.
+    Returns:
+        list: A list of Paper objects that match the query.
+    """
     all_papers = get_all_papers()
     query = query.lower()
     return [p for p in all_papers if query in p.title.lower() or query in p.abstract.lower()]
+
+def save_db_as_json():
+    """
+    Saves the database as a JSON file.
+    """
+    with open('arxiv_papers.json', 'w') as f:
+        json.dump(papers(), f, indent=4)

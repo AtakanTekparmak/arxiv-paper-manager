@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-from fasthtml.common import Card, Div, H3, P, A, Button
 
 from src.db import Paper
 
