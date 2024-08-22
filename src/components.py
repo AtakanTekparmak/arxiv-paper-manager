@@ -64,14 +64,28 @@ def get_paper_card(paper: Paper) -> Card:
 
 def get_toggle_buttons(filter: str) -> Div:
     """
-    Returns the toggle buttons to filter the papers.
+    Returns the toggle buttons to filter the papers and a save button.
 
     Args:
         filter (str): The filter to apply.
     Returns:
-        Div: The toggle buttons.
+        Div: The toggle buttons and save button.
     """
     return Div(
+        Button(
+            "Save",
+            cls="save-button",
+            hx_post="/save",
+            hx_swap="none",
+            style="""
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            """
+        ),
         Button("To Be Read", 
                cls=f"to-be-read-button {'active' if filter == 'to-be-read' else ''}",
                id="to-be-read-toggle",
@@ -94,6 +108,11 @@ def get_toggle_buttons(filter: str) -> Div:
                background-color: #4CAF50;
                border-color: #4CAF50;
                border-radius: 10px;
-               """),
-        cls="toggle-buttons"
+               """
+        ),
+        cls="toggle-buttons",
+        style="""
+        display: flex;
+        gap: 10px;
+        """
     )

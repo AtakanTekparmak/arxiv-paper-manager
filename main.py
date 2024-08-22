@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from starlette.staticfiles import StaticFiles
 
-from src.db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper
+from src.db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper, save_db_as_json
 from src.utils import fetch_paper_info
 from src.components import get_search_form, get_add_form, get_paper_card, get_toggle_buttons
 
@@ -78,5 +78,39 @@ def delete(paper_id: int):
 def post(paper_id: int):
     updated_paper = toggle_paper_state(paper_id)
     return get_paper_card(updated_paper)
+
+@rt("/save")
+def post():
+    try:
+        save_db_as_json()
+        return Div("Database saved successfully", 
+                   cls="success-message",
+                   hx_swap_oob="true",
+                   id="save-message",
+                   style="""
+                   position: fixed;
+                   top: 20px;
+                   right: 20px;
+                   background-color: #4CAF50;
+                   color: white;
+                   padding: 15px;
+                   border-radius: 5px;
+                   z-index: 1000;
+                   """)
+    except Exception as e:
+        return Div(f"Error saving database: {str(e)}", 
+                   cls="error-message",
+                   hx_swap_oob="true",
+                   id="save-message",
+                   style="""
+                   position: fixed;
+                   top: 20px;
+                   right: 20px;
+                   background-color: #f44336;
+                   color: white;
+                   padding: 15px;
+                   border-radius: 5px;
+                   z-index: 1000;
+                   """)
 
 serve()
