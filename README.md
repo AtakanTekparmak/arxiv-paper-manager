@@ -17,7 +17,11 @@ This is a simple tool to manage arxiv papers, which I needed because I have over
 ```bash
 make install
 ```
-3. Run the app:
+3. Load data from `arxiv_papers.json` (optional).
+```bash
+make load_papers
+```
+4. Run the app:
 ```bash
 make run
 ```
@@ -28,10 +32,10 @@ Very simple. (People should be using Makefiles more often, they're awesome.)
 
 Feel free to open an issue or a pull request. The features I want to add currently are:
 
-- [ ] Add save & load functionality in JSON (add a button to download the JSON file, and maybe a make target to load it)
+- [X] Add save & load functionality in JSON (add a button to download the JSON file, and maybe a make target to load it)
 - [ ] Align the "View PDF", "Remove" and "Toggle State" buttons to the bottom of the card
 - [ ] Make sure all cards are the same size
-- [ ] Add a check for duplicate papers and a notification if the paper is already in the list (with a nice visual component)
+- [X] Add a check for duplicate papers and a notification if the paper is already in the list (with a nice visual component)
 
 ## License
 

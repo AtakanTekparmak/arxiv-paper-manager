@@ -17,14 +17,20 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  1. install           Install dependencies and set up the environment (should be run first)"
-	@echo "  2. run               Run the main.py script 
-	@echo "  3. clean             Remove the virtual environment and its contents"
+	@echo "  2. load_papers       Load papers from JSON file"
+	@echo "  3. run               Run the main.py script"
+	@echo "  4. clean             Remove the virtual environment and its contents"
 
 # Install dependencies and set up the environment
 install: 
 	$(PYTHON) -m venv $(VENV_NAME)
 	. $(VENV_NAME)/bin/activate && \
 	$(PIP) install -r requirements.txt 
+
+# Load papers from JSON file
+load_papers:
+	. $(VENV_NAME)/bin/activate && \
+	$(PYTHON) load_papers.py
 
 # Run the main.py script
 run: 
