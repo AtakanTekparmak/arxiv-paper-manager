@@ -1,5 +1,7 @@
 # Arxiv Paper Manager
 
+![Example image](example_image.png)
+
 This is a simple tool to manage arxiv papers, which I needed because I have over 200 papers "To Be Read" that I need to get off my browser tabs on my mobile and laptop. It's made using [FastHTML](https://github.com/AnswerDotAI/fasthtml), which I wanted to give a try. This project is by no means complete, not it is intended to be used for critical purposes. I'm just sharing it in case someone finds it useful (or wants to contribute, which would be awesome).
 
 ## Features

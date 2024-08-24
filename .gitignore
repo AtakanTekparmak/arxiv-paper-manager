@@ -172,3 +172,6 @@ fasthtml_example.py
 
 # arxiv_papers.json
 arxiv_papers.json
+
+# DS_Store
+.DS_Store
