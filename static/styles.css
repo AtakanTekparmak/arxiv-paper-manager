@@ -70,6 +70,24 @@ h1.main-title {
     padding-top: 2.5rem;
     margin-bottom: 1rem;
     color: #11191f;
+    display: flex;
+    flex-direction: column;
+}
+
+.card .paper-title,
+.card .paper-abstract {
+    flex-grow: 1; /* Allow title and abstract to expand and fill available space */
+}
+
+.card .card-bottom {
+    align-self: flex-end; /* Align buttons to the bottom of the card */
+}
+
+.card-bottom {
+    display: flex;
+    gap: 10px; /* Add some space between buttons */
+    align-items: center; /* Vertically center buttons */
+    margin-top: auto; /* Push buttons to the bottom of the card */
 }
 
 .paper-state {
