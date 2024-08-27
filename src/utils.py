@@ -1,14 +1,26 @@
 import requests
 from bs4 import BeautifulSoup
 import re
+from urllib.parse import urlparse
 
 from src.db import Paper
+
+class ArxivParsingError(Exception):
+    pass
 
 def parse_arxiv_url(url: str) -> str:
     """
     Parses the ArXiv URL to get the arXiv ID
     """
-    arxiv_id = re.search(r'(\d{4}\.\d{5})', url).group(1)
+    # Check if the URL is from arxiv.org
+    if not urlparse(url).netloc.endswith('arxiv.org'):
+        raise ArxivParsingError("The provided URL is not from arxiv.org")
+    
+    match = re.search(r'(\d{4}\.\d{5})', url)
+    if not match:
+        raise ArxivParsingError("Could not find a valid ArXiv ID in the URL")
+    
+    arxiv_id = match.group(1)
     return f"https://arxiv.org/abs/{arxiv_id}"
 
 def fetch_paper_info(url: str) -> Paper:
@@ -16,14 +28,27 @@ def fetch_paper_info(url: str) -> Paper:
     Fetches the paper title, abstract, and PDF URL 
     from the ArXiv URL and returns a Paper object.
     """
-    # Fetch the HTML content of the ArXiv URL
-    response = requests.get(parse_arxiv_url(url))
+    try:
+        # Fetch the HTML content of the ArXiv URL
+        response = requests.get(parse_arxiv_url(url))
+        response.raise_for_status()  # Raises an HTTPError for bad responses
 
-    # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(response.text, 'html.parser')
-    title = soup.find('h1', class_='title mathjax').text.strip().replace('Title:', '').strip()
-    abstract = soup.find('blockquote', class_='abstract mathjax').text.strip().replace('Abstract:', '').strip()
-    pdf_url = f"https://arxiv.org/pdf/{re.search(r'(\d{4}\.\d{5})', url).group(1)}.pdf"
-    #submitted = re.search(r'\d{1,2} \w{3} \d{4}', soup.find('div', class_='dateline').text.strip().split('Submitted on ')[1].strip()).group(0)
+        # Parse the HTML content using BeautifulSoup
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        title_elem = soup.find('h1', class_='title mathjax')
+        abstract_elem = soup.find('blockquote', class_='abstract mathjax')
+        
+        if not title_elem or not abstract_elem:
+            raise ArxivParsingError("Could not find title or abstract elements in the HTML")
+        
+        title = title_elem.text.strip().replace('Title:', '').strip()
+        abstract = abstract_elem.text.strip().replace('Abstract:', '').strip()
+        pdf_url = f"https://arxiv.org/pdf/{re.search(r'(\d{4}\.\d{5})', url).group(1)}.pdf"
 
-    return Paper(title=title, abstract=abstract, pdf_url=pdf_url)
+        return Paper(title=title, abstract=abstract, pdf_url=pdf_url)
+    
+    except requests.RequestException as e:
+        raise ArxivParsingError(f"Failed to fetch the ArXiv page: {str(e)}")
+    except (AttributeError, IndexError) as e:
+        raise ArxivParsingError(f"Error parsing the ArXiv page: {str(e)}")
