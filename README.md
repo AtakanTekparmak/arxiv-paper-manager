@@ -34,10 +34,9 @@ Very simple. (People should be using Makefiles more often, they're awesome.)
 
 Feel free to open an issue or a pull request. The features I want to add currently are:
 
-- [X] Add save & load functionality in JSON (add a button to download the JSON file, and maybe a make target to load it)
-- [ ] Align the "View PDF", "Remove" and "Toggle State" buttons to the bottom of the card
-- [ ] Make sure all cards are the same size
-- [X] Add a check for duplicate papers and a notification if the paper is already in the list (with a nice visual component)
+- [ ] Make sure the toggled button changes visual state 
+- [ ] Better visual elements for errors (currently they are just text slotted into the card layout, which is not very nice)
+- [ ] Add a visual confirmation after clicking the save button
 
 ## License
 
