@@ -92,9 +92,9 @@ def get_toggle_buttons(filter: str) -> Div:
                hx_get=f"/?filter={'all' if filter == 'to-be-read' else 'to-be-read'}",
                hx_target="body",
                hx_push_url="true",
-               style="""
-               background-color: #ffa500;
-               border-color: #ffa500;
+               style=f"""
+               background-color: {'#e69400' if filter == 'to-be-read' else '#ffa500'};
+               border-color: {'#e69400' if filter == 'to-be-read' else '#ffa500'};
                border-radius: 10px;
                """
         ),
@@ -104,9 +104,9 @@ def get_toggle_buttons(filter: str) -> Div:
                hx_get=f"/?filter={'all' if filter == 'read' else 'read'}",
                hx_target="body",
                hx_push_url="true",
-               style="""
-               background-color: #4CAF50;
-               border-color: #4CAF50;
+               style=f"""
+               background-color: {'#45a049' if filter == 'read' else '#4CAF50'};
+               border-color: {'#45a049' if filter == 'read' else '#4CAF50'};
                border-radius: 10px;
                """
         ),
