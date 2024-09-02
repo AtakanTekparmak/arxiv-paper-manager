@@ -38,15 +38,19 @@ def fetch_paper_info(url: str) -> Paper:
         
         title_elem = soup.find('h1', class_='title mathjax')
         abstract_elem = soup.find('blockquote', class_='abstract mathjax')
+        date_elem = soup.find('div', class_='dateline')
         
-        if not title_elem or not abstract_elem:
-            raise ArxivParsingError("Could not find title or abstract elements in the HTML")
+        if not title_elem or not abstract_elem or not date_elem:
+            raise ArxivParsingError("Could not find title, abstract, or date elements in the HTML")
         
         title = title_elem.text.strip().replace('Title:', '').strip()
         abstract = abstract_elem.text.strip().replace('Abstract:', '').strip()
         pdf_url = f"https://arxiv.org/pdf/{re.search(r'(\d{4}\.\d{5})', url).group(1)}.pdf"
+        
+        date_match = re.search(r'Submitted on (\d+ [A-Za-z]+ \d{4})', date_elem.text)
+        date_submitted = date_match.group(1) if date_match else None
 
-        return Paper(title=title, abstract=abstract, pdf_url=pdf_url)
+        return Paper(title=title, abstract=abstract, pdf_url=pdf_url, date_submitted=date_submitted)
     
     except requests.RequestException as e:
         raise ArxivParsingError(f"Failed to fetch the ArXiv page: {str(e)}")
