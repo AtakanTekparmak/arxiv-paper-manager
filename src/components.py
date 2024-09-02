@@ -57,6 +57,7 @@ def get_paper_card(paper: Paper) -> Card:
         Div(paper.state, cls=f"paper-state {'to-be-read' if paper.state == 'To Be Read' else 'read'}"),
         H3(paper.title, cls="paper-title"),
         P(paper.abstract[:200] + '...' if len(paper.abstract) > 200 else paper.abstract, cls="paper-abstract"),
+        P(f"Submitted on: {paper.date_submitted}" if paper.date_submitted else "Submission date unknown", cls="paper-date"),
         get_card_bottom(paper),
         id=f"paper-{paper.id}",
         cls="paper-card card"

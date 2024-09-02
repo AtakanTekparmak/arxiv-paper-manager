@@ -1,7 +1,9 @@
+from typing import Optional, Union
+from datetime import datetime
+import json
+
 from fasthtml.common import database
 from pydantic import BaseModel
-from typing import Optional, Union
-import json
 
 # Database setup
 db = database('data/arxiv_papers.db')
@@ -14,11 +16,12 @@ class Paper(BaseModel):
     abstract: str
     pdf_url: str
     state: str = "To Be Read"
+    date_submitted: Optional[str] = None
 
 # Initialize the database
 def init_db():
     if papers not in db.t:
-        papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, pk='id')
+        papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, date_submitted=str, pk='id')
 
 # Database operations
 def add_paper(paper: Paper) -> Union[None, int]:
@@ -70,6 +73,16 @@ def get_all_papers(filter='all'):
         list: A list of Paper objects.
     """
     all_papers = [Paper(**p) for p in papers()]
+
+    def parse_date(date_str):
+        if not date_str:
+            return datetime.min
+        try:
+            return datetime.strptime(date_str, "%d %b %Y")
+        except ValueError:
+            return datetime.min
+
+    all_papers.sort(key=lambda x: parse_date(x.date_submitted), reverse=True)
     if filter == 'all':
         return all_papers
     elif filter == 'to-be-read':
