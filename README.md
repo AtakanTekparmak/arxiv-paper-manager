@@ -34,7 +34,6 @@ Very simple. (People should be using Makefiles more often, they're awesome.)
 
 Feel free to open an issue or a pull request. The features I want to add currently are:
 
-- [ ] Make sure the toggled button changes visual state 
 - [ ] Better visual elements for errors (currently they are just text slotted into the card layout, which is not very nice)
 - [ ] Add a visual confirmation after clicking the save button
 
