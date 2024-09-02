@@ -11,6 +11,8 @@ This is a simple tool to manage arxiv papers, which I needed because I have over
 - Mark papers as read
 - Delete papers
 - Filter papers by read status (the buttons don't work as I wanted them to visually, but functionality is there: click on a button to filter, click again to reset the filter)
+- Papers are ordered by submission date, latest first
+- Paper counts are displayed in the header
 
 ## Installation and Usage
 
@@ -19,7 +21,7 @@ This is a simple tool to manage arxiv papers, which I needed because I have over
 ```bash
 make install
 ```
-3. Load data from `arxiv_papers.json` (optional).
+3. Load data from `arxiv_papers.json` (optional, if you have saved by using the "Save" button before).
 ```bash
 make load_papers
 ```
