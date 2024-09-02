@@ -1,6 +1,6 @@
 from fasthtml.common import *
 
-from src.db import Paper
+from src.db import Paper, get_paper_count_by_state
 
 def get_search_form(q: str = '') -> Form:
     """
@@ -115,5 +115,43 @@ def get_toggle_buttons(filter: str) -> Div:
         style="""
         display: flex;
         gap: 10px;
+        """
+    )
+
+def get_paper_counts() -> Div:
+    """
+    Returns a Div containing the counts of papers by state.
+
+    Returns:
+        Div: The paper counts div.
+    """
+    to_be_read_count, read_count = get_paper_count_by_state()
+    
+    return Div(
+        Span(
+            f"To Be Read: {to_be_read_count}", 
+            cls="to-be-read-count",
+            style="""
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            """
+        ),
+        Span(
+            f"Read: {read_count}", 
+            cls="read-count",
+            style="""
+            background-color: #ffa500;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            """
+        ),
+        cls="paper-counts",
+        style="""
+        display: flex;
+        gap: 10px;  
+        align-items: center;
         """
     )

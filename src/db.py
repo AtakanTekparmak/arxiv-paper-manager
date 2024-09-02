@@ -111,3 +111,15 @@ def save_db_as_json():
     """
     with open('arxiv_papers.json', 'w') as f:
         json.dump(papers(), f, indent=4)
+
+def get_paper_count_by_state():
+    """
+    Returns the count of papers by state.
+
+    Returns:
+        tuple: A tuple containing the count of "To Be Read" and "Read" papers.
+    """
+    all_papers = get_all_papers()
+    to_be_read_count = sum(1 for p in all_papers if p.state == "To Be Read")
+    read_count = sum(1 for p in all_papers if p.state == "Read")
+    return to_be_read_count, read_count

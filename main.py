@@ -1,9 +1,9 @@
 from fasthtml.common import *
 from starlette.staticfiles import StaticFiles
 
-from src.db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper, save_db_as_json
+from src.db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper, save_db_as_json, get_paper_count_by_state
 from src.utils import fetch_paper_info
-from src.components import get_search_form, get_add_form, get_paper_card, get_toggle_buttons
+from src.components import get_search_form, get_add_form, get_paper_card, get_toggle_buttons, get_paper_counts
 
 # Initialize the database
 init_db()
@@ -24,7 +24,6 @@ rt = app.route
 
 @rt("/")
 def get(q: str = '', filter: str = 'all'):
-
     # Get the search form, add form, and paper cards
     search_form = get_search_form(q)
     add_form = get_add_form()
@@ -41,6 +40,7 @@ def get(q: str = '', filter: str = 'all'):
     return Title("ArXiv Paper Manager"), Container(
         Div(
             H1("ArXiv Paper Manager", cls="main-title"),
+            get_paper_counts(),
             toggle_buttons,
             cls="header"
         ),
@@ -83,34 +83,12 @@ def post(paper_id: int):
 def post():
     try:
         save_db_as_json()
-        return Div("Database saved successfully", 
-                   cls="success-message",
-                   hx_swap_oob="true",
-                   id="save-message",
-                   style="""
-                   position: fixed;
-                   top: 20px;
-                   right: 20px;
-                   background-color: #4CAF50;
-                   color: white;
-                   padding: 15px;
-                   border-radius: 5px;
-                   z-index: 1000;
-                   """)
+        return Div(
+            "Database saved successfully", 
+        )
     except Exception as e:
-        return Div(f"Error saving database: {str(e)}", 
-                   cls="error-message",
-                   hx_swap_oob="true",
-                   id="save-message",
-                   style="""
-                   position: fixed;
-                   top: 20px;
-                   right: 20px;
-                   background-color: #f44336;
-                   color: white;
-                   padding: 15px;
-                   border-radius: 5px;
-                   z-index: 1000;
-                   """)
+        return Div(
+            f"Error saving database: {str(e)}"
+        )
 
 serve()
