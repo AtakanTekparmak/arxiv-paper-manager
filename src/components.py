@@ -132,7 +132,7 @@ def get_paper_counts() -> Div:
             f"To Be Read: {to_be_read_count}", 
             cls="to-be-read-count",
             style="""
-            background-color: #4CAF50;
+            background-color: #ffa500;
             color: white;
             padding: 5px 10px;
             border-radius: 10px;
@@ -142,7 +142,7 @@ def get_paper_counts() -> Div:
             f"Read: {read_count}", 
             cls="read-count",
             style="""
-            background-color: #ffa500;
+            background-color: #4CAF50;
             color: white;
             padding: 5px 10px;
             border-radius: 10px;
