@@ -1,8 +1,12 @@
 # Arxiv Paper Manager
 
-![Example image](example_image.png)
+![Example image 1](static/assets/example_image_1.png)
+![Example image 2](static/assets/example_image_2.png)
 
-This is a simple tool to manage arxiv papers, which I needed because I have over 200 papers "To Be Read" that I need to get off my browser tabs on my mobile and laptop. It's made using [FastHTML](https://github.com/AnswerDotAI/fasthtml), which I wanted to give a try. This project is by no means complete, not it is intended to be used for critical purposes. I'm just sharing it in case someone finds it useful (or wants to contribute, which would be awesome).
+This is a simple tool to manage arxiv papers, which I needed because I have over 200 papers "To Be Read" that I need to get off my browser tabs on my mobile and laptop. It's made using [FastHTML](https://github.com/AnswerDotAI/fasthtml), which I wanted to give a try. This project is by no means complete, I'm just sharing it in case someone finds it useful (or wants to contribute, which would be awesome).
+
+##### 16/09/2024 Update: 
+I'm using this daily, with 372 papers added to the DB. With the new addition of the admin add form, the title is not fully accurate now, but it stays for now. I had to add a [2006 Paper](http://ggp.stanford.edu/readings/uct.pdf), not on arxiv, which is why I've added the admin form.
 
 ## Features
 
@@ -13,6 +17,7 @@ This is a simple tool to manage arxiv papers, which I needed because I have over
 - Filter papers by read status (the buttons don't work as I wanted them to visually, but functionality is there: click on a button to filter, click again to reset the filter)
 - Papers are ordered by submission date, latest first
 - Paper counts are displayed in the header
+- Add non-arxiv papers by add paper form
 
 ## Installation and Usage
 
