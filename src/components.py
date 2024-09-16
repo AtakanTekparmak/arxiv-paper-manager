@@ -178,10 +178,10 @@ def get_add_paper_form() -> Div:
                 "×",
                 cls="close-button",
                 hx_get="/close_add_paper_form",
-                hx_target="#add-paper-form",
+                hx_target="#add-paper-modal",
                 hx_swap="outerHTML"
             ),
-            H2("Add Paper", style="margin: 0;"),
+            H2("Add Paper", style="margin: 0;color: #041c26;"),
             cls="form-header",
             style="""
             display: flex;
@@ -217,6 +217,7 @@ def get_add_paper_modal() -> Div:
     return Div(
         get_add_paper_form(),
         cls="modal",
+        id="add-paper-modal",
         style="""
         position: fixed;
         top: 0;
