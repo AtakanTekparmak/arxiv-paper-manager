@@ -3,7 +3,7 @@ from starlette.staticfiles import StaticFiles
 
 from src.db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper, save_db_as_json, get_paper_count_by_state
 from src.utils import fetch_paper_info
-from src.components import get_search_form, get_add_form, get_paper_card, get_toggle_buttons, get_paper_counts
+from src.components import get_search_form, get_add_form, get_paper_card, get_toggle_buttons, get_paper_counts, get_add_paper_modal, get_add_paper_form
 
 # Initialize the database
 init_db()
@@ -90,5 +90,35 @@ def post():
         return Div(
             f"Error saving database: {str(e)}"
         )
+
+@rt("/add_paper_form")
+def get():
+    return get_add_paper_modal()
+
+@rt("/close_add_paper_form")
+def get():
+    return ""
+
+@rt("/add_paper")
+def post(title: str, abstract: str, pdf_url: str, date_submitted: str):
+    new_paper = add_paper(Paper(title=title, abstract=abstract, pdf_url=pdf_url, date_submitted=date_submitted, state="To Be Read"))
+    if new_paper is None:
+        return Div(
+            "Paper already exists in the database.",
+            cls="error-message",
+            style="""
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            """
+        )
+    return Div(
+        get_paper_card(Paper(**new_paper)),
+        Script("document.querySelector('.modal').remove();"),
+        hx_swap_oob="afterbegin:#paper-list"
+    )
 
 serve()
