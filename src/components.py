@@ -74,6 +74,21 @@ def get_toggle_buttons(filter: str) -> Div:
     """
     return Div(
         Button(
+            "Add",
+            cls="add-button",
+            hx_get="/add_paper_form",
+            hx_target="body",
+            hx_swap="beforeend",
+            style="""
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            """
+        ),
+        Button(
             "Save",
             cls="save-button",
             hx_post="/save",
@@ -153,5 +168,66 @@ def get_paper_counts() -> Div:
         display: flex;
         gap: 10px;  
         align-items: center;
+        """
+    )
+
+def get_add_paper_form() -> Div:
+    return Div(
+        Div(
+            Button(
+                "×",
+                cls="close-button",
+                hx_get="/close_add_paper_form",
+                hx_target="#add-paper-form",
+                hx_swap="outerHTML"
+            ),
+            H2("Add Paper", style="margin: 0;"),
+            cls="form-header",
+            style="""
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            """
+        ),
+        Form(
+            Input(id="title", name="title", placeholder="Title", required=True),
+            Textarea(id="abstract", name="abstract", placeholder="Abstract", required=True, rows=5),
+            Input(id="pdf_url", name="pdf_url", placeholder="PDF URL", required=True),
+            Input(id="date_submitted", name="date_submitted", placeholder="Date Submitted (DD MMM YYYY)", required=True),
+            Button("Add Paper", type="submit"),
+            cls="add-paper-form",
+            hx_post="/add_paper",
+            hx_target="body",
+            hx_swap="beforeend"
+        ),
+        id="add-paper-form",
+        cls="modal-content",
+        style="""
+        background-color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        """
+    )
+
+def get_add_paper_modal() -> Div:
+    return Div(
+        get_add_paper_form(),
+        cls="modal",
+        style="""
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
         """
     )
