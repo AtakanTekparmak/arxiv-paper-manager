@@ -16,12 +16,13 @@ class Paper(BaseModel):
     abstract: str
     pdf_url: str
     state: str = "To Be Read"
+    priority: str = "Low"
     date_submitted: Optional[str] = None
 
 # Initialize the database
 def init_db():
     if papers not in db.t:
-        papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, date_submitted=str, pk='id')
+        papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, priority=str, date_submitted=str, pk='id')
 
 # Database operations
 def add_paper(paper: Paper) -> Union[None, int]:
@@ -61,6 +62,21 @@ def toggle_paper_state(paper_id: int):
     paper = Paper(**paper_dict)
     new_state = "Read" if paper.state == "To Be Read" else "To Be Read"
     updated_paper = papers.update({"state": new_state}, paper_id)
+    return Paper(**updated_paper)
+
+def toggle_paper_priority(paper_id: int):
+    """
+    Toggles the priority of the paper between "Low" and "High".
+
+    Args:
+        paper_id (int): The ID of the paper.
+    Returns:
+        Paper: The updated Paper object.
+    """
+    paper_dict = papers[paper_id]
+    paper = Paper(**paper_dict)
+    new_priority = "High" if paper.priority == "Low" else "Low"
+    updated_paper = papers.update({"priority": new_priority}, paper_id)
     return Paper(**updated_paper)
 
 def get_all_papers(filter='all'):
