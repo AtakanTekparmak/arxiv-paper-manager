@@ -45,7 +45,10 @@ def fetch_paper_info(url: str) -> Paper:
         
         title = title_elem.text.strip().replace('Title:', '').strip()
         abstract = abstract_elem.text.strip().replace('Abstract:', '').strip()
-        pdf_url = f"https://arxiv.org/pdf/{re.search(r'(\d{4}\.\d{5})', url).group(1)}.pdf"
+        
+        # Extract arxiv ID first, then use it in the f-string
+        arxiv_id = re.search(r'(\d{4}\.\d{5})', url).group(1)
+        pdf_url = f"https://arxiv.org/pdf/{arxiv_id}.pdf"
         
         date_match = re.search(r'Submitted on (\d+ [A-Za-z]+ \d{4})', date_elem.text)
         date_submitted = date_match.group(1) if date_match else None
