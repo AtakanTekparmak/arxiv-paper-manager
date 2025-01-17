@@ -18,8 +18,24 @@ I'm using this daily, with 372 papers added to the DB. With the new addition of 
 - Papers are ordered by submission date, latest first
 - Paper counts are displayed in the header
 - Add non-arxiv papers by add paper form
+- Paper importance levels (Low/Medium/High) to help prioritize reading
+- Backwards compatible with existing databases and JSON files
 
 ## Installation and Usage
+
+If you're upgrading from a previous version, your existing papers will automatically be assigned "Medium" importance. You can:
+
+1. Keep using your existing database - it will be automatically upgraded
+2. Or reset the database and reload from JSON:
+```bash
+make reset_db
+make load_papers
+```
+
+To backup your current database before upgrading:
+```bash
+make backup_db
+```
 
 1. Clone the repository
 2. Install the dependencies:

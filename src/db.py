@@ -21,8 +21,33 @@ class Paper(BaseModel):
 
 # Initialize the database
 def init_db():
+    """Initialize the database and handle schema migrations."""
     if papers not in db.t:
         papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, importance=str, date_submitted=str, pk='id')
+    else:
+        # Check if importance column exists by trying to access it from a record
+        try:
+            if len(papers()) > 0:
+                first_paper = papers()[0]
+                # If this doesn't raise KeyError, importance exists
+                _ = first_paper['importance']
+        except (KeyError, IndexError):
+            print("Migrating database to add 'importance' field...")
+            # Get all existing papers
+            existing_papers = papers()
+            
+            # Drop the existing table
+            db.t.drop('papers')
+            
+            # Recreate with new schema
+            papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, importance=str, date_submitted=str, pk='id')
+            
+            # Reinsert all papers with default importance
+            for paper in existing_papers:
+                paper['importance'] = 'Medium'
+                papers.insert(paper)
+            
+            print(f"Successfully migrated {len(existing_papers)} papers")
 
 # Database operations
 def add_paper(paper: Paper) -> Union[None, int]:
@@ -38,7 +63,13 @@ def add_paper(paper: Paper) -> Union[None, int]:
     for p in existing_papers:
         if p.title == paper.title:
             return None
-    return papers.insert(paper.model_dump(exclude={'id'}))
+            
+    # Ensure importance is set to Medium if not provided
+    paper_data = paper.model_dump(exclude={'id'})
+    if 'importance' not in paper_data or paper_data['importance'] is None:
+        paper_data['importance'] = 'Medium'
+        
+    return papers.insert(paper_data)
 
 def remove_paper(paper_id: int):
     """
