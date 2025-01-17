@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from starlette.staticfiles import StaticFiles
 
-from src.db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper, save_db_as_json, get_paper_count_by_state
+from src.db import init_db, add_paper, remove_paper, toggle_paper_state, get_all_papers, search_papers, Paper, save_db_as_json, get_paper_count_by_state, update_paper_importance
 from src.utils import fetch_paper_info
 from src.components import get_search_form, get_add_form, get_paper_card, get_toggle_buttons, get_paper_counts, get_add_paper_modal, get_add_paper_form
 
@@ -120,5 +120,16 @@ def post(title: str, abstract: str, pdf_url: str, date_submitted: str):
         Script("document.querySelector('.modal').remove();"),
         hx_swap_oob="afterbegin:#paper-list"
     )
+
+@rt("/update_importance/{paper_id}")
+def post(paper_id: int, importance: str):
+    """
+    Updates the importance of a paper.
+    """
+    try:
+        updated_paper = update_paper_importance(paper_id, importance)
+        return get_paper_card(updated_paper)
+    except ValueError as e:
+        return Div(f"Error updating importance: {str(e)}", cls="error-message")
 
 serve()

@@ -16,13 +16,13 @@ class Paper(BaseModel):
     abstract: str
     pdf_url: str
     state: str = "To Be Read"
-    priority: str = "Low"
+    importance: str = "Medium"
     date_submitted: Optional[str] = None
 
 # Initialize the database
 def init_db():
     if papers not in db.t:
-        papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, priority=str, date_submitted=str, pk='id')
+        papers.create(id=int, title=str, abstract=str, pdf_url=str, state=str, importance=str, date_submitted=str, pk='id')
 
 # Database operations
 def add_paper(paper: Paper) -> Union[None, int]:
@@ -139,3 +139,18 @@ def get_paper_count_by_state():
     to_be_read_count = sum(1 for p in all_papers if p.state == "To Be Read")
     read_count = sum(1 for p in all_papers if p.state == "Read")
     return to_be_read_count, read_count
+
+def update_paper_importance(paper_id: int, importance: str):
+    """
+    Updates the importance of a paper.
+
+    Args:
+        paper_id (int): The ID of the paper.
+        importance (str): The new importance level.
+    Returns:
+        Paper: The updated Paper object.
+    """
+    if importance not in ["Low", "Medium", "High"]:
+        raise ValueError("Invalid importance value")
+    updated_paper = papers.update({"importance": importance}, paper_id)
+    return Paper(**updated_paper)

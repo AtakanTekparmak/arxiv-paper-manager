@@ -253,3 +253,31 @@ h1.main-title {
     scrollbar-width: thin;
     scrollbar-color: var(--primary) #f0f8ff;
 }
+
+/* Add these styles */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+select:focus {
+    outline: none;
+}
+
+select option {
+    background-color: white;
+    color: black;
+}
+
+.importance-select {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    font-size: 0.8rem;
+    width: 90px;
+}

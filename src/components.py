@@ -46,6 +46,37 @@ def get_paper_card(paper: Paper) -> Card:
     Returns:
         Card: The paper card.
     """ 
+    def get_importance_select(paper: Paper) -> Select:
+        importance_colors = {
+            "Low": "#8B8B8B",
+            "Medium": "#FFA500",
+            "High": "#FF4444"
+        }
+        current_color = importance_colors[paper.importance]
+        
+        return Select(
+            Option("Low", value="Low", selected=paper.importance=="Low"),
+            Option("Medium", value="Medium", selected=paper.importance=="Medium"),
+            Option("High", value="High", selected=paper.importance=="High"),
+            name="importance",
+            hx_post=f"/update_importance/{paper.id}",
+            hx_target=f"#paper-{paper.id}",
+            hx_swap="outerHTML",
+            style=f"""
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 2px 5px;
+            border-radius: 5px;
+            background-color: {current_color};
+            color: white;
+            border: none;
+            font-size: 0.8rem;
+            width: 90px;
+            cursor: pointer;
+            """
+        )
+
     def get_card_bottom(paper: Paper) -> Div:
         return Div(
             A("View PDF", href=paper.pdf_url, target="_blank"),
@@ -53,7 +84,9 @@ def get_paper_card(paper: Paper) -> Card:
             Button("Toggle State", cls="toggle-state-button", hx_post=f"/toggle_state/{paper.id}", hx_target="closest .card", hx_swap="outerHTML"),
             cls="card-bottom"
         )
+
     return Card(
+        get_importance_select(paper),
         Div(paper.state, cls=f"paper-state {'to-be-read' if paper.state == 'To Be Read' else 'read'}"),
         H3(paper.title, cls="paper-title"),
         P(paper.abstract[:200] + '...' if len(paper.abstract) > 200 else paper.abstract, cls="paper-abstract"),
