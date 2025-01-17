@@ -23,10 +23,12 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 rt = app.route
 
 @rt("/")
-def get(q: str = '', filter: str = 'all'):
-    # Validate filter value
+def get(q: str = '', filter: str = 'all', importance_filter: str = 'all'):
+    # Validate filter values
     if filter not in ['all', 'to-be-read', 'read']:
         filter = 'all'
+    if importance_filter not in ['all', 'Low', 'Medium', 'High']:
+        importance_filter = 'all'
     
     # Get the search form, add form, and paper cards
     search_form = get_search_form(q)
@@ -37,9 +39,13 @@ def get(q: str = '', filter: str = 'all'):
     else:
         results = get_all_papers(filter)
     
+    # Apply importance filter if needed
+    if importance_filter != 'all':
+        results = [paper for paper in results if paper.importance == importance_filter]
+    
     paper_cards = [get_paper_card(paper) for paper in results]
     
-    toggle_buttons = get_toggle_buttons(filter)
+    toggle_buttons = get_toggle_buttons(filter, importance_filter)
     
     return Title("ArXiv Paper Manager"), Container(
         Div(

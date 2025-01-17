@@ -96,12 +96,13 @@ def get_paper_card(paper: Paper) -> Card:
         cls="paper-card card"
     )
 
-def get_toggle_buttons(filter: str) -> Div:
+def get_toggle_buttons(filter: str = 'all', importance_filter: str = 'all') -> Div:
     """
     Returns the toggle buttons to filter the papers and a save button.
 
     Args:
-        filter (str): The filter to apply.
+        filter (str): The state filter to apply.
+        importance_filter (str): The importance filter to apply.
     Returns:
         Div: The toggle buttons and save button.
     """
@@ -110,7 +111,45 @@ def get_toggle_buttons(filter: str) -> Div:
         "to-be-read": "#FFA500",
         "read": "#4CAF50"
     }
-    current_color = filter_colors[filter]
+    importance_colors = {
+        "all": "#666666",
+        "Low": "#8B8B8B",
+        "Medium": "#FFA500",
+        "High": "#FF4444"
+    }
+    
+    common_style = """
+        padding: 5px 10px;
+        border-radius: 10px;
+        color: white;
+        border: none;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        height: 36px;
+        line-height: 36px;
+    """
+    
+    button_style = f"""
+        {common_style}
+        cursor: pointer;
+        justify-content: center;
+        min-height: 36px;
+    """
+    
+    select_style = f"""
+        {common_style}
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 8px;
+        padding-right: 25px;
+        width: auto;
+        min-height: 36px;
+    """
     
     return Div(
         Button(
@@ -119,66 +158,44 @@ def get_toggle_buttons(filter: str) -> Div:
             hx_get="/add_paper_form",
             hx_target="body",
             hx_swap="beforeend",
-            style="""
-            background-color: #4CAF50;
-            border-color: #4CAF50;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            padding: 0 15px;
-            height: 35px;
-            line-height: 35px;
-            """
+            style=f"{button_style} background-color: #4CAF50;"
         ),
         Button(
             "Save",
             cls="save-button",
             hx_post="/save",
             hx_swap="none",
-            style="""
-            background-color: #4a90e2;
-            border-color: #4a90e2;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            padding: 0 15px;
-            height: 35px;
-            line-height: 35px;
-            """
+            style=f"{button_style} background-color: #4a90e2;"
         ),
         Select(
-            Option("All", value="all", selected=filter=="all"),
+            Option("State", value="all", selected=filter=="all"),
             Option("To Be Read", value="to-be-read", selected=filter=="to-be-read"),
             Option("Read", value="read", selected=filter=="read"),
             name="filter",
             hx_get="/",
             hx_target="body",
             hx_trigger="change",
-            hx_include="[name='filter']",
-            style=f"""
-            background-color: {current_color};
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0 25px 0 15px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            width: 7.5rem;
-            height: 35px;
-            line-height: 35px;
-            display: inline-flex;
-            align-items: center;
-            """
+            hx_include="[name='filter'], [name='importance_filter']",
+            style=f"{select_style} background-color: {filter_colors[filter]};"
+        ),
+        Select(
+            Option("Importance", value="all", selected=importance_filter=="all"),
+            Option("Low", value="Low", selected=importance_filter=="Low"),
+            Option("Medium", value="Medium", selected=importance_filter=="Medium"),
+            Option("High", value="High", selected=importance_filter=="High"),
+            name="importance_filter",
+            hx_get="/",
+            hx_target="body",
+            hx_trigger="change",
+            hx_include="[name='filter'], [name='importance_filter']",
+            style=f"{select_style} background-color: {importance_colors[importance_filter]};"
         ),
         cls="toggle-buttons",
         style="""
         display: flex;
         gap: 10px;
         align-items: center;
+        height: 36px;
         """
     )
 
