@@ -105,6 +105,13 @@ def get_toggle_buttons(filter: str) -> Div:
     Returns:
         Div: The toggle buttons and save button.
     """
+    filter_colors = {
+        "all": "#666666",
+        "to-be-read": "#FFA500",
+        "read": "#4CAF50"
+    }
+    current_color = filter_colors[filter]
+    
     return Div(
         Button(
             "Add",
@@ -116,9 +123,13 @@ def get_toggle_buttons(filter: str) -> Div:
             background-color: #4CAF50;
             border-color: #4CAF50;
             border-radius: 10px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 5px;
+            padding: 0 15px;
+            height: 35px;
+            line-height: 35px;
             """
         ),
         Button(
@@ -130,39 +141,44 @@ def get_toggle_buttons(filter: str) -> Div:
             background-color: #4a90e2;
             border-color: #4a90e2;
             border-radius: 10px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 5px;
+            padding: 0 15px;
+            height: 35px;
+            line-height: 35px;
             """
         ),
-        Button("To Be Read", 
-               cls=f"to-be-read-button {'active' if filter == 'to-be-read' else ''}",
-               id="to-be-read-toggle",
-               hx_get=f"/?filter={'all' if filter == 'to-be-read' else 'to-be-read'}",
-               hx_target="body",
-               hx_push_url="true",
-               style=f"""
-               background-color: {'#e69400' if filter == 'to-be-read' else '#ffa500'};
-               border-color: {'#e69400' if filter == 'to-be-read' else '#ffa500'};
-               border-radius: 10px;
-               """
-        ),
-        Button("Read", 
-               cls=f"read-button {'active' if filter == 'read' else ''}",
-               id="read-toggle",
-               hx_get=f"/?filter={'all' if filter == 'read' else 'read'}",
-               hx_target="body",
-               hx_push_url="true",
-               style=f"""
-               background-color: {'#45a049' if filter == 'read' else '#4CAF50'};
-               border-color: {'#45a049' if filter == 'read' else '#4CAF50'};
-               border-radius: 10px;
-               """
+        Select(
+            Option("All", value="all", selected=filter=="all"),
+            Option("To Be Read", value="to-be-read", selected=filter=="to-be-read"),
+            Option("Read", value="read", selected=filter=="read"),
+            name="filter",
+            hx_get="/",
+            hx_target="body",
+            hx_trigger="change",
+            hx_include="[name='filter']",
+            style=f"""
+            background-color: {current_color};
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 25px 0 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            width: 7.5rem;
+            height: 35px;
+            line-height: 35px;
+            display: inline-flex;
+            align-items: center;
+            """
         ),
         cls="toggle-buttons",
         style="""
         display: flex;
         gap: 10px;
+        align-items: center;
         """
     )
 

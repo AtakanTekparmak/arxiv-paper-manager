@@ -24,6 +24,10 @@ rt = app.route
 
 @rt("/")
 def get(q: str = '', filter: str = 'all'):
+    # Validate filter value
+    if filter not in ['all', 'to-be-read', 'read']:
+        filter = 'all'
+    
     # Get the search form, add form, and paper cards
     search_form = get_search_form(q)
     add_form = get_add_form()
