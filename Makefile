@@ -1,62 +1,64 @@
-# Set default target
-.DEFAULT_GOAL := help
+.PHONY: install run clean dev backup restore venv load_papers
 
-# Variables
+# Python virtual environment
+VENV = venv
+PYTHON = $(VENV)/bin/python
+PIP = $(VENV)/bin/pip
 
-## Python
-PYTHON := python3
-PIP := pip
-VENV_NAME := venv
+# Create virtual environment
+venv:
+	python3 -m venv $(VENV)
+	$(PIP) install --upgrade pip
 
-# .env file
-ENV_FILE := .env
+# Install dependencies
+install: venv
+	$(PIP) install -r requirements.txt
 
-# Help target
-help:
-	@echo "Usage: make [target]"
-	@echo ""
-	@echo "Targets:"
-	@echo "  1. install           Install dependencies and set up the environment (should be run first)"
-	@echo "  2. load_papers       Load papers from JSON file"
-	@echo "  3. run               Run the main.py script"
-	@echo "  4. clean             Remove the virtual environment and its contents"
-	@echo "  5. reset_db          Delete the database (will prompt for confirmation)"
-	@echo "  6. backup_db         Create a backup of the current database"
-	@echo "  7. init_db           Initialize an empty database with the current schema"
+# Run the application
+run: install
+	$(PYTHON) main.py
 
-# Install dependencies and set up the environment
-install: 
-	$(PYTHON) -m venv $(VENV_NAME)
-	. $(VENV_NAME)/bin/activate && \
-	$(PIP) install -r requirements.txt 
+# Run in development mode with auto-reload
+dev: install
+	$(VENV)/bin/uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# Clean up database and temporary files
+clean:
+	rm -f papers.db
+	rm -f *.pyc
+	rm -rf __pycache__
+	rm -rf $(VENV)
+
+# Backup database
+backup:
+	cp papers.db papers_backup_$(shell date +%Y%m%d_%H%M%S).db
+
+# Restore from backup (usage: make restore BACKUP=papers_backup_20240101_120000.db)
+restore:
+	cp $(BACKUP) papers.db
+
+# Show database stats
+stats:
+	sqlite3 papers.db "SELECT 'Total Papers:', COUNT(*) FROM papers; SELECT 'Read Papers:', COUNT(*) FROM papers WHERE is_read = 1; SELECT 'Unread Papers:', COUNT(*) FROM papers WHERE is_read = 0;"
+
+# Export papers to JSON
+export:
+	sqlite3 papers.db -json "SELECT * FROM papers ORDER BY added_date DESC;" > papers_export_$(shell date +%Y%m%d_%H%M%S).json
 
 # Load papers from JSON file
 load_papers:
-	. $(VENV_NAME)/bin/activate && \
 	$(PYTHON) load_papers.py
 
-# Run the main.py script
-run: 
-	. $(VENV_NAME)/bin/activate && \
-	$(PYTHON) main.py
-
-# Clean the virtual environment
-clean:
-	rm -rf $(VENV_NAME)
-
-# Reset the database
-reset_db:
-	@echo "Are you sure you want to delete the database? [y/N] " && read ans && [ $${ans:-N} = y ]
-	rm -f data/arxiv_papers.db
-	@echo "Database deleted. Run 'make load_papers' to reload from JSON."
-
-# Backup the current database
-backup_db:
-	@mkdir -p backups
-	@cp data/arxiv_papers.db "backups/arxiv_papers_$(shell date +%Y%m%d_%H%M%S).db"
-	@echo "Database backed up to backups/"
-
-# Initialize empty database
-init_db:
-	. $(VENV_NAME)/bin/activate && \
-	$(PYTHON) -c "from src.db import init_db; init_db()"
+help:
+	@echo "Available commands:"
+	@echo "  venv         - Create Python virtual environment"
+	@echo "  install      - Install Python dependencies (creates venv if needed)"
+	@echo "  run          - Run the application"
+	@echo "  dev          - Run in development mode with auto-reload"
+	@echo "  load_papers  - Load papers from arxiv_papers.json file"
+	@echo "  clean        - Remove database, temporary files, and virtual environment"
+	@echo "  backup       - Create a timestamped backup of the database"
+	@echo "  restore      - Restore from backup (specify BACKUP=filename)"
+	@echo "  stats        - Show database statistics"
+	@echo "  export       - Export papers to JSON file"
+	@echo "  help         - Show this help message"
