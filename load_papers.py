@@ -31,21 +31,17 @@ def convert_date(date_str: str) -> str:
         return datetime.now().isoformat()
     
     try:
-        # Try to parse "20 May 2022" format
-        date_obj = datetime.strptime(date_str, "%d %b %Y")
+        # Try to parse "YYYY-MM-DD" format (current format)
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d")
         return date_obj.strftime("%Y-%m-%d")
     except ValueError:
         try:
-            # Try to parse "12 Jun 2024" format
+            # Try to parse "20 May 2022" format (old format)
             date_obj = datetime.strptime(date_str, "%d %b %Y")
             return date_obj.strftime("%Y-%m-%d")
         except ValueError:
             # If parsing fails, return current date
             return datetime.now().strftime("%Y-%m-%d")
-
-def convert_state_to_read(state: str) -> bool:
-    """Convert state to boolean read status"""
-    return state.lower() in ["read", "completed", "finished"]
 
 def map_paper_data(paper_json: dict) -> dict:
     """Map JSON paper data to database schema"""
@@ -53,22 +49,33 @@ def map_paper_data(paper_json: dict) -> dict:
     arxiv_id = extract_arxiv_id_from_url(pdf_url)
     
     # Create abstract URL from PDF URL if possible
-    url = ""
-    if arxiv_id:
+    url = paper_json.get("url", "")
+    if not url and arxiv_id:
         url = f"https://arxiv.org/abs/{arxiv_id}"
+    
+    # Handle authors - can be array or string
+    authors = paper_json.get("authors", "")
+    if isinstance(authors, list):
+        authors = ", ".join(authors)
+    
+    # Handle read status - can be boolean or string
+    is_read = paper_json.get("read", False)
+    if isinstance(is_read, str):
+        is_read = is_read.lower() in ["read", "true", "completed", "finished"]
     
     return {
         'arxiv_id': arxiv_id,
         'title': paper_json.get("title", "").strip(),
-        'authors': paper_json.get("authors", ""),  # Not in original JSON, will be empty
+        'authors': authors,
         'abstract': paper_json.get("abstract", "").strip(),
-        'published': convert_date(paper_json.get("date_submitted", "")),
+        'published': convert_date(paper_json.get("submitted", "")),
         'url': url,
         'pdf_url': pdf_url,
-        'categories': paper_json.get("categories", ""),  # Not in original JSON
-        'is_read': convert_state_to_read(paper_json.get("state", "")),
-        'notes': f"Importance: {paper_json.get('importance', 'Not specified')}",
-        'added_date': datetime.now().isoformat()
+        'categories': paper_json.get("categories", ""),
+        'is_read': is_read,
+        'notes': '',
+        'added_date': datetime.now().isoformat(),
+        'importance': paper_json.get('importance', 'Medium')
     }
 
 def load_papers_from_json(json_file: str = "arxiv_papers.json"):
@@ -97,8 +104,18 @@ def load_papers_from_json(json_file: str = "arxiv_papers.json"):
             is_read=bool, 
             notes=str, 
             added_date=str,
+            importance=str,
             pk='id'
         )
+    else:
+        # Migration: Add importance column if it doesn't exist
+        try:
+            existing_columns = [col[1] for col in db.execute("PRAGMA table_info(papers)").fetchall()]
+            if 'importance' not in existing_columns:
+                db.execute("ALTER TABLE papers ADD COLUMN importance TEXT DEFAULT 'Medium'")
+                print("✅ Added 'importance' column to existing database")
+        except Exception as e:
+            print(f"Migration check: {e}")
     
     # Load JSON data
     try:
@@ -111,8 +128,14 @@ def load_papers_from_json(json_file: str = "arxiv_papers.json"):
         print(f"Error reading file '{json_file}': {e}")
         return False
     
-    if not isinstance(papers_data, list):
-        print(f"Error: JSON file should contain a list of papers")
+    # Handle both dict and array formats
+    if isinstance(papers_data, dict):
+        # Convert dict to list of papers
+        papers_list = list(papers_data.values())
+    elif isinstance(papers_data, list):
+        papers_list = papers_data
+    else:
+        print(f"Error: JSON file should contain a dict or list of papers")
         return False
     
     # Process each paper
@@ -120,10 +143,10 @@ def load_papers_from_json(json_file: str = "arxiv_papers.json"):
     skipped_count = 0
     error_count = 0
     
-    print(f"Loading {len(papers_data)} papers from '{json_file}'...")
+    print(f"Loading {len(papers_list)} papers from '{json_file}'...")
     print("-" * 50)
     
-    for i, paper_json in enumerate(papers_data, 1):
+    for i, paper_json in enumerate(papers_list, 1):
         try:
             # Map the data
             paper_data = map_paper_data(paper_json)
@@ -165,7 +188,7 @@ def load_papers_from_json(json_file: str = "arxiv_papers.json"):
     print(f"   ✅ Added: {added_count} papers")
     print(f"   ⏭️  Skipped: {skipped_count} papers (already exist)")
     print(f"   ❌ Errors: {error_count} papers")
-    print(f"   📝 Total processed: {len(papers_data)} papers")
+    print(f"   📝 Total processed: {len(papers_list)} papers")
     
     if added_count > 0:
         print(f"\n🎉 Successfully imported {added_count} new papers!")

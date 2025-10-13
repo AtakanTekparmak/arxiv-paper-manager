@@ -11,14 +11,18 @@ I'm using this daily, with 372 papers added to the DB. With the new addition of 
 ## Features
 
 - Add papers by arxiv URL (both the paper page URL and the PDF URL are supported)
-- Search papers by keyword in the title or abstract
-- Mark papers as read
+- Add non-arxiv papers manually with custom details
+- Search papers by keyword in the title, abstract, or authors
+- Mark papers as read/unread
 - Delete papers
-- Filter papers by read status (the buttons don't work as I wanted them to visually, but functionality is there: click on a button to filter, click again to reset the filter)
+- Filter papers by read status (All/Read/Unread)
+- Filter papers by importance level (All/Low/Medium/High)
+- Paper importance levels (Low/Medium/High) to help prioritize reading
 - Papers are ordered by submission date, latest first
 - Paper counts are displayed in the header
-- Add non-arxiv papers by add paper form
-- Paper importance levels (Low/Medium/High) to help prioritize reading
+- Responsive 2-column grid layout on desktop, single column on mobile
+- Save database to JSON file with visual confirmation
+- Improved visual design with better alerts and badges
 - Backwards compatible with existing databases and JSON files
 
 ## Installation and Usage
@@ -55,10 +59,14 @@ Very simple. (People should be using Makefiles more often, they're awesome.)
 
 ## Contributing
 
-Feel free to open an issue or a pull request. The features I want to add currently are:
+Feel free to open an issue or a pull request. Potential future enhancements:
 
-- [ ] Better visual elements for errors (currently they are just text slotted into the card layout, which is not very nice)
-- [ ] Add a visual confirmation after clicking the save button
+- [ ] Add tags/categories for papers
+- [ ] Export papers to BibTeX format
+- [ ] Dark mode support
+- [ ] Bulk operations (mark multiple papers as read, delete multiple papers)
+- [ ] Advanced search with filters
+- [ ] Paper recommendations based on reading history
 
 ## License
 
