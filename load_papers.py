@@ -74,8 +74,7 @@ def map_paper_data(paper_json: dict) -> dict:
         'categories': paper_json.get("categories", ""),
         'is_read': is_read,
         'notes': '',
-        'added_date': datetime.now().isoformat(),
-        'importance': paper_json.get('importance', 'Medium')
+        'added_date': datetime.now().isoformat()
     }
 
 def load_papers_from_json(json_file: str = "arxiv_papers.json"):

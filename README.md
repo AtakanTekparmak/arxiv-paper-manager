@@ -16,9 +16,7 @@ I'm using this daily, with 372 papers added to the DB. With the new addition of 
 - Mark papers as read/unread
 - Delete papers
 - Filter papers by read status (All/Read/Unread)
-- Filter papers by importance level (All/Low/Medium/High)
-- Paper importance levels (Low/Medium/High) to help prioritize reading
-- Papers are ordered by submission date, latest first
+- Papers are automatically sorted by submission date (latest first)
 - Paper counts are displayed in the header
 - Responsive 2-column grid layout on desktop, single column on mobile
 - Save database to JSON file with visual confirmation
@@ -26,20 +24,6 @@ I'm using this daily, with 372 papers added to the DB. With the new addition of 
 - Backwards compatible with existing databases and JSON files
 
 ## Installation and Usage
-
-If you're upgrading from a previous version, your existing papers will automatically be assigned "Medium" importance. You can:
-
-1. Keep using your existing database - it will be automatically upgraded
-2. Or reset the database and reload from JSON:
-```bash
-make reset_db
-make load_papers
-```
-
-To backup your current database before upgrading:
-```bash
-make backup_db
-```
 
 1. Clone the repository
 2. Install the dependencies:

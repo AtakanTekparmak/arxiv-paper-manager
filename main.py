@@ -45,9 +45,6 @@ css = Style("""
     .paper-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
     .status-read { background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
     .status-unread { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-    .importance-low { background: rgba(100, 116, 139, 0.1); color: #64748b; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-    .importance-medium { background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-    .importance-high { background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
     .alert { padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-weight: 500; display: flex; align-items: center; gap: 10px; }
     .alert-success { background: white; color: #10b981; border-left: 4px solid #10b981; }
     .alert-error { background: white; color: #ef4444; border-left: 4px solid #ef4444; }
@@ -144,7 +141,7 @@ def get_stats():
     unread = total - read
     return {"total": total, "read": read, "unread": unread}
 
-def get_papers_filtered(search_query="", read_filter="all", importance_filter="all"):
+def get_papers_filtered(search_query="", read_filter="all"):
     """Get filtered papers"""
     where_conditions = []
     
@@ -156,15 +153,10 @@ def get_papers_filtered(search_query="", read_filter="all", importance_filter="a
     elif read_filter == "unread":
         where_conditions.append("is_read = 0")
     
-    if importance_filter and importance_filter != "all":
-        # Capitalize first letter to match database format
-        importance_val = importance_filter.capitalize()
-        where_conditions.append(f"importance = '{importance_val}'")
-    
     where_clause = " AND ".join(where_conditions) if where_conditions else None
     
     try:
-        result = papers(where=where_clause, order_by="added_date DESC")
+        result = papers(where=where_clause, order_by="published DESC")
         return result if result else []
     except:
         return list(papers())
@@ -209,38 +201,20 @@ def header_component(stats):
         cls="header"
     )
 
-def controls_component(search_query="", current_filter="all", importance_filter="all"):
+def controls_component(search_query="", current_filter="all"):
     return Div(
         # ArXiv URL form
         Form(
             Div(
                 Label("Add ArXiv Paper by URL", cls="form-label"),
-                Div(
-                    Div(
-                        Input(
-                            type="url",
-                            name="url",
-                            placeholder="https://arxiv.org/abs/2301.00001 or ArXiv ID",
-                            cls="form-input",
-                            required=True
-                        ),
-                        cls="form-group"
-                    ),
-                    Div(
-                        Label("Importance", cls="form-label"),
-                        Select(
-                            Option("Low", value="Low"),
-                            Option("Medium", value="Medium", selected=True),
-                            Option("High", value="High"),
-                            name="importance",
-                            cls="form-input"
-                        ),
-                        cls="form-group",
-                        style="min-width: 150px;"
-                    ),
-                    Button("Add Paper", type="submit", cls="btn btn-primary"),
-                    cls="form-row"
+                Input(
+                    type="url",
+                    name="url",
+                    placeholder="https://arxiv.org/abs/2301.00001 or ArXiv ID",
+                    cls="form-input",
+                    required=True
                 ),
+                Button("Add Paper", type="submit", cls="btn btn-primary"),
                 cls="form-group"
             ),
             method="post",
@@ -255,17 +229,6 @@ def controls_component(search_query="", current_filter="all", importance_filter=
                 Input(type="text", name="authors", placeholder="Authors", cls="form-input"),
                 Input(type="url", name="url", placeholder="Paper URL (optional)", cls="form-input"),
                 Textarea(name="abstract", placeholder="Abstract (optional)", cls="form-input", rows="3"),
-                Div(
-                    Label("Importance", cls="form-label"),
-                    Select(
-                        Option("Low", value="Low"),
-                        Option("Medium", value="Medium", selected=True),
-                        Option("High", value="High"),
-                        name="importance",
-                        cls="form-input"
-                    ),
-                    cls="form-group"
-                ),
                 Button("Add Manual Paper", type="submit", cls="btn btn-secondary"),
                 method="post",
                 action="/add_manual"
@@ -291,21 +254,9 @@ def controls_component(search_query="", current_filter="all", importance_filter=
         
         # Filter buttons
         Div(
-            Div(
-                Strong("Read Status: ", style="margin-right: 10px; color: #64748b;"),
-                A("All", href=f"/?importance={importance_filter}", cls=f"btn {'btn-primary' if current_filter == 'all' else 'btn-secondary'}"),
-                A("Unread", href=f"/?filter=unread&importance={importance_filter}", cls=f"btn {'btn-primary' if current_filter == 'unread' else 'btn-secondary'}"),
-                A("Read", href=f"/?filter=read&importance={importance_filter}", cls=f"btn {'btn-primary' if current_filter == 'read' else 'btn-secondary'}"),
-                style="display: flex; align-items: center; flex-wrap: wrap; margin-bottom: 10px;"
-            ),
-            Div(
-                Strong("Importance: ", style="margin-right: 10px; color: #64748b;"),
-                A("All", href=f"/?filter={current_filter}", cls=f"btn {'btn-primary' if importance_filter == 'all' else 'btn-secondary'}"),
-                A("Low", href=f"/?filter={current_filter}&importance=low", cls=f"btn {'btn-primary' if importance_filter == 'low' else 'btn-secondary'}"),
-                A("Medium", href=f"/?filter={current_filter}&importance=medium", cls=f"btn {'btn-primary' if importance_filter == 'medium' else 'btn-secondary'}"),
-                A("High", href=f"/?filter={current_filter}&importance=high", cls=f"btn {'btn-primary' if importance_filter == 'high' else 'btn-secondary'}"),
-                style="display: flex; align-items: center; flex-wrap: wrap;"
-            ),
+            A("All Papers", href="/", cls=f"btn {'btn-primary' if current_filter == 'all' else 'btn-secondary'}"),
+            A("Unread", href="/?filter=unread", cls=f"btn {'btn-primary' if current_filter == 'unread' else 'btn-secondary'}"),
+            A("Read", href="/?filter=read", cls=f"btn {'btn-primary' if current_filter == 'read' else 'btn-secondary'}"),
             cls="filters"
         ),
         
@@ -313,19 +264,12 @@ def controls_component(search_query="", current_filter="all", importance_filter=
     )
 
 def paper_card(paper):
-    importance = getattr(paper, 'importance', 'Medium') or 'Medium'
-    importance_class = f"importance-{importance.lower()}"
-    
     return Div(
         H3(paper.title, cls="paper-title"),
         Div(
             Span(
                 "✅ Read" if paper.is_read else "📖 Unread",
                 cls=f"{'status-read' if paper.is_read else 'status-unread'}"
-            ),
-            Span(
-                f"🔥 {importance}",
-                cls=importance_class
             ),
             Span(
                 f"👤 {paper.authors}",
@@ -460,8 +404,7 @@ def save_paper_to_json(paper_data: dict):
             "pdf_url": paper_data.get('pdf_url', ''),
             "submitted": paper_data.get('published', '') if paper_data.get('published') else datetime.now().strftime("%Y-%m-%d"),
             "read": paper_data.get('is_read', False),
-            "source": "arxiv" if paper_data.get('arxiv_id') else "manual",
-            "importance": paper_data.get('importance', 'Medium')
+            "source": "arxiv" if paper_data.get('arxiv_id') else "manual"
         }
         
         # Add new paper with string key
@@ -559,20 +502,20 @@ def delete_paper_from_json(paper_id: int):
 
 # Routes
 @rt("/")
-def get(search: str = "", filter: str = "all", importance: str = "all", success: str = "", error: str = ""):
+def get(search: str = "", filter: str = "all", success: str = "", error: str = ""):
     stats = get_stats()
-    papers_list = get_papers_filtered(search, filter, importance)
+    papers_list = get_papers_filtered(search, filter)
     
     return Title("ArXiv Paper Manager"), Main(
         success_alert(success) if success else "",
         error_alert(error) if error else "",
         header_component(stats),
-        controls_component(search, filter, importance),
+        controls_component(search, filter),
         papers_section(papers_list, search)
     )
 
 @rt("/add", methods=["POST"])
-def post(url: str, importance: str = "Medium"):
+def post(url: str):
     if not url.strip():
         return RedirectResponse("/?error=invalid_url", status_code=303)
     
@@ -584,9 +527,6 @@ def post(url: str, importance: str = "Medium"):
     if not paper_data:
         return RedirectResponse("/?error=paper_not_found", status_code=303)
     
-    # Add importance to paper data
-    paper_data['importance'] = importance
-    
     try:
         papers.insert(paper_data)
         save_paper_to_json(paper_data)
@@ -595,7 +535,7 @@ def post(url: str, importance: str = "Medium"):
         return RedirectResponse("/?error=database_error", status_code=303)
 
 @rt("/add_manual", methods=["POST"])
-def post(title: str, authors: str = "", url: str = "", abstract: str = "", importance: str = "Medium"):
+def post(title: str, authors: str = "", url: str = "", abstract: str = ""):
     if not title.strip():
         return RedirectResponse("/?error=title_required", status_code=303)
     
@@ -610,8 +550,7 @@ def post(title: str, authors: str = "", url: str = "", abstract: str = "", impor
         'categories': '',
         'is_read': False,
         'notes': '',
-        'added_date': datetime.now().isoformat(),
-        'importance': importance
+        'added_date': datetime.now().isoformat()
     }
     
     try:
@@ -668,8 +607,7 @@ def post():
                 "pdf_url": paper.pdf_url,
                 "submitted": paper.published if paper.published else datetime.now().strftime("%Y-%m-%d"),
                 "read": paper.is_read,
-                "source": "arxiv" if arxiv_id else "manual",
-                "importance": getattr(paper, 'importance', 'Medium') or 'Medium'
+                "source": "arxiv" if arxiv_id else "manual"
             }
         
         # Write to file
